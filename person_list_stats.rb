@@ -3,9 +3,6 @@ require 'csv'
 require_relative 'person'
 require_relative 'person_parser'
 
-include PersonParser
-
-
 file_paths = ARGV
 if file_paths.empty?
   puts 'ArgumentError: at least one csv file path is required'
@@ -14,11 +11,11 @@ end
 merged_people = []
 
 file_paths.each do |file_path|
-  raw_people = PersonParser.parse(file_path)
-  merged_people.push(*Person.load_list(raw_people))
+  merged_people += PersonParser.new(file_path).people
 end
 
 puts '>> Imiona:'
-merged_people.group_by{ |p| p.name }.each{ |k, v| puts "#{k} (#{v.length})" }
+merged_people.each_with_object(Hash.new(0)){ |person, hsh| hsh[person.name] = hsh[person.name] + 1 }.each{ |k, v| puts "#{k} (#{v})" }
 puts '>> Nazwiska:'
-merged_people.group_by{ |p| p.last_name }.each{ |k, v| puts "#{k} (#{v.length})" }
+merged_people.each_with_object(Hash.new(0)){ |person, hsh| hsh[person.last_name] = hsh[person.last_name] + 1 }.each{ |k, v| puts "#{k} (#{v})" }
+

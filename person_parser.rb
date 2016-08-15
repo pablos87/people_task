@@ -13,7 +13,7 @@ class PersonParser
 
   def raw_people
     @raw_people ||= [].tap do |raw_people|
-      CSV.foreach(file_path, :headers => true) do |raw_person|
+      CSV.foreach(csv_file_path, :headers => true) do |raw_person|
         raw_people << { name: raw_person['name'], last_name: raw_person['lastname'] }
       end
     end
